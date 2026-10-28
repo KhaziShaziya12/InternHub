@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% from "_macros.html" import internship_card %}
+{% block title %}Internships{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="page-head d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div>
+      <h1>Internships</h1>
+      <p class="meta mb-0">{{ internships|length }} result{{ '' if internships|length == 1 else 's' }}</p>
+    </div>
+    <a class="btn btn-outline-primary" href="{{ url_for('internship_new') }}"><i class="bi bi-plus-lg"></i> Post an internship</a>
+  </div>
+
+  <form class="card-ih p-3 mb-4" method="get" action="{{ url_for('internships') }}" role="search">
+    <div class="row g-2 align-items-end">
+      <div class="col-12 col-lg-4">
+        <label class="form-label" for="q">Search</label>
+        <input class="form-control" id="q" name="q" value="{{ q }}" placeholder="Role, company, city, skill…">
+      </div>
+      <div class="col-6 col-lg-2">
+        <label class="form-label" for="category">Category</label>
+        <select class="form-select" id="category" name="category">
+          <option value="">All</option>
+          {% for c in categories %}<option value="{{ c.category }}" {{ 'selected' if c.category == category }}>{{ c.category }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-6 col-lg-2">
+        <label class="form-label" for="mode">Work mode</label>
+        <select class="form-select" id="mode" name="mode">
+          <option value="">Any</option>
+          {% for m in modes %}<option {{ 'selected' if m == mode }}>{{ m }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" id="open" name="open" value="1" {{ 'checked' if only_open }}>
+          <label class="form-check-label" for="open">Open only</label>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2 d-flex gap-2">
+        <button class="btn btn-primary flex-grow-1" type="submit">Filter</button>
+        <a class="btn btn-outline-primary" href="{{ url_for('internships') }}" aria-label="Clear filters"><i class="bi bi-x-lg"></i></a>
+      </div>
+    </div>
+  </form>
+
+  <div class="row g-3">
+    {% for i in internships %}<div class="col-lg-6">{{ internship_card(i) }}</div>
+    {% else %}
+    <div class="col-12"><div class="card-ih empty"><i class="bi bi-search"></i><p class="mt-2 mb-0">No internships match your search. Try fewer filters.</p></div></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

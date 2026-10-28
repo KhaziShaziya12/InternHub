@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% from "_macros.html" import internship_card %}
+{% block title %}Find your internship{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9">
+        <p class="text-uppercase fw-bold mb-2" style="color:var(--royal-bright);letter-spacing:.08em">For students</p>
+        <h1>Find the internship that starts your career.</h1>
+        <p class="lead mb-4">Browse real opportunities, check eligibility at a glance, apply in a minute and follow every application from “Applied” to “Decision”.</p>
+
+        <form class="search-bar" action="{{ url_for('internships') }}" method="get" role="search">
+          <div class="row g-0 align-items-center">
+            <div class="col-12 col-md">
+              <label for="q" class="visually-hidden">Search internships by role, company or location</label>
+              <input id="q" name="q" type="search" class="form-control" placeholder="Search by role, company, skill or city…">
+            </div>
+            <div class="col-12 col-md-3">
+              <label for="hero-cat" class="visually-hidden">Category</label>
+              <select id="hero-cat" name="category" class="form-select">
+                <option value="">All categories</option>
+                {% for c in categories %}<option value="{{ c.category }}">{{ c.category }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="col-12 col-md-auto p-1">
+              <button class="btn btn-primary w-100 px-4" type="submit"><i class="bi bi-search"></i> Search</button>
+            </div>
+          </div>
+        </form>
+        <div class="mt-3">
+          <span class="meta me-1">Popular:</span>
+          {% for c in categories[:5] %}<a class="hero-chip" href="{{ url_for('internships', category=c.category) }}">{{ c.category }}</a>{% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container my-4">
+  <div class="row g-3">
+    <div class="col-6 col-md-3"><div class="stat"><div class="num">{{ stats.open_internships }}</div><div class="lbl">Open internships</div></div></div>
+    <div class="col-6 col-md-3"><div class="stat"><div class="num">{{ stats.companies }}</div><div class="lbl">Partner companies</div></div></div>
+    <div class="col-6 col-md-3"><div class="stat"><div class="num">{{ stats.students }}</div><div class="lbl">Registered students</div></div></div>
+    <div class="col-6 col-md-3"><div class="stat"><div class="num">{{ stats.applications }}</div><div class="lbl">Applications tracked</div></div></div>
+  </div>
+</section>
+
+<section class="container my-5">
+  <h2 class="section-title h3 mb-3">Browse by category</h2>
+  {% if categories %}
+  <div class="row g-3">
+    {% for c in categories %}
+    <div class="col-6 col-md-4 col-lg-3">
+      <a class="card-ih hoverable cat-tile" href="{{ url_for('internships', category=c.category) }}">
+        <i class="bi {{ category_icon(c.category) }}" aria-hidden="true"></i>
+        <div class="name">{{ c.category }}</div>
+        <div class="count">{{ c.cnt }} internship{{ '' if c.cnt == 1 else 's' }}</div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card-ih empty"><i class="bi bi-inbox"></i><p class="mt-2 mb-0">No internships yet. <a href="{{ url_for('internship_new') }}">Post the first one.</a></p></div>
+  {% endif %}
+</section>
+
+<section class="container my-5">
+  <div class="d-flex justify-content-between align-items-end mb-3">
+    <h2 class="section-title h3 mb-0">Latest internships</h2>
+    <a href="{{ url_for('internships') }}">View all <i class="bi bi-arrow-right"></i></a>
+  </div>
+  <div class="row g-3">
+    {% for i in featured %}<div class="col-lg-6">{{ internship_card(i) }}</div>
+    {% else %}<div class="col-12"><div class="card-ih empty">Nothing to show yet.</div></div>{% endfor %}
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="card-ih p-4 p-md-5">
+    <h2 class="section-title h3 mb-4">How InternHub works</h2>
+    <div class="row g-4">
+      <div class="col-md-4"><h3 class="h5"><i class="bi bi-1-circle-fill text-primary"></i> Register</h3><p class="mb-0 meta">Create your student profile with your department and skills.</p></div>
+      <div class="col-md-4"><h3 class="h5"><i class="bi bi-2-circle-fill text-primary"></i> Apply</h3><p class="mb-0 meta">Check the eligibility box, then apply to internships that fit you.</p></div>
+      <div class="col-md-4"><h3 class="h5"><i class="bi bi-3-circle-fill text-primary"></i> Track</h3><p class="mb-0 meta">Look up your email on the <a href="{{ url_for('track') }}">Track page</a> to see every status.</p></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

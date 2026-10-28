@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge, tracker %}
+{% block title %}Track applications{% endblock %}
+{% block content %}
+<div class="container" style="max-width:860px">
+  <div class="page-head"><h1>Track your applications</h1><p class="meta">Enter the email you registered with.</p></div>
+  <form class="card-ih p-3 mb-4" method="get" role="search">
+    <div class="input-group">
+      <label class="visually-hidden" for="email">Registered email</label>
+      <input class="form-control" type="email" id="email" name="email" value="{{ email }}" placeholder="you@college.edu" required>
+      <button class="btn btn-primary" type="submit">Track</button>
+    </div>
+  </form>
+
+  {% if student %}
+    <h2 class="h5 mb-3">{{ student.full_name }}'s applications ({{ rows|length }})</h2>
+    {% for r in rows %}
+    <div class="card-ih p-3 p-md-4 mb-3">
+      <div class="d-flex flex-wrap justify-content-between gap-2 mb-3">
+        <div>
+          <a class="job-title text-decoration-none" href="{{ url_for('internship_detail', internship_id=r.internship_id) }}">{{ r.role_title }}</a>
+          <div class="company">{{ r.company_name }}{% if r.location %} · {{ r.location }}{% endif %}</div>
+        </div>
+        <div class="text-md-end">{{ status_badge(r.status) }}<div class="meta mt-1">Applied {{ r.applied_on|fmt_date }}</div></div>
+      </div>
+      {{ tracker(r.status) }}
+    </div>
+    {% else %}
+    <div class="card-ih empty"><i class="bi bi-inbox"></i><p class="mt-2 mb-0">No applications yet. <a href="{{ url_for('internships') }}">Browse internships.</a></p></div>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endblock %}

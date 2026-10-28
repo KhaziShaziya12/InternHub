@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Apply · {{ i.role_title }}{% endblock %}
+{% block content %}
+<div class="container" style="max-width:760px">
+  <div class="page-head"><h1>Apply for this internship</h1></div>
+  <div class="card-ih p-4 mb-3">
+    <h2 class="job-title">{{ i.role_title }}</h2>
+    <div class="company mb-3">{{ i.company_name }} · {{ i.location or 'Location not set' }}</div>
+    <div class="elig-box"><strong>Eligibility:</strong> {{ i.eligibility or 'Open to all students.' }}</div>
+    <p class="meta mt-3 mb-0"><i class="bi bi-calendar-event"></i> Apply by {{ i.deadline|fmt_date }}</p>
+  </div>
+
+  {% if not i.is_open %}
+    <div class="alert alert-danger">Applications for this internship are closed.</div>
+  {% elif not students %}
+    <div class="alert alert-info">No students are registered yet. <a href="{{ url_for('student_new') }}">Register first</a>, then come back to apply.</div>
+  {% else %}
+  <form method="post" class="card-ih p-4">
+    <label class="form-label" for="student_id">Who is applying? *</label>
+    <select class="form-select mb-2" id="student_id" name="student_id" required>
+      <option value="">Choose a registered student…</option>
+      {% for s in students %}<option value="{{ s.student_id }}">{{ s.full_name }} — {{ s.email }}</option>{% endfor %}
+    </select>
+    <p class="meta">Not listed? <a href="{{ url_for('student_new') }}">Register as a student</a>.</p>
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary" type="submit">Submit application</button>
+      <a class="btn btn-outline-primary" href="{{ url_for('internship_detail', internship_id=i.internship_id) }}">Back</a>
+    </div>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

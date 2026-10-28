@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Companies{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="page-head"><h1>Companies</h1><p class="meta mb-0">Organisations offering internships.</p></div>
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="row g-3">
+        {% for c in companies %}
+        <div class="col-md-6">
+          <div class="card-ih p-3">
+            <h2 class="job-title">{{ c.company_name }}</h2>
+            <div class="meta mb-2">{{ c.industry or 'Industry not set' }}{% if c.location %} · {{ c.location }}{% endif %}</div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{ url_for('internships', q=c.company_name) }}">{{ c.posts }} internship{{ '' if c.posts == 1 else 's' }}</a>
+              {% if c.website %}<a href="{{ c.website }}" target="_blank" rel="noopener noreferrer">Website <i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <div class="col-12"><div class="card-ih empty">No companies yet.</div></div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <form method="post" class="card-ih p-3">
+        <h2 class="h5">Add a company</h2>
+        <label class="form-label" for="company_name">Name *</label>
+        <input class="form-control mb-2" id="company_name" name="company_name" maxlength="100" required>
+        <label class="form-label" for="industry">Industry</label>
+        <input class="form-control mb-2" id="industry" name="industry" maxlength="60">
+        <label class="form-label" for="location">Location</label>
+        <input class="form-control mb-2" id="location" name="location" maxlength="100">
+        <label class="form-label" for="website">Website</label>
+        <input class="form-control mb-3" type="url" id="website" name="website" maxlength="200" placeholder="https://">
+        <button class="btn btn-primary w-100" type="submit">Add company</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Post an internship{% endblock %}
+{% block content %}
+<div class="container" style="max-width:820px">
+  <div class="page-head"><h1>Post an internship</h1></div>
+  {% if not companies %}
+    <div class="alert alert-info">No companies exist yet. <a href="{{ url_for('companies') }}">Add a company first.</a></div>
+  {% endif %}
+  <form method="post" class="card-ih p-4" novalidate>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="company_id">Company *</label>
+        <select class="form-select" id="company_id" name="company_id" required>
+          <option value="">Choose…</option>
+          {% for c in companies %}<option value="{{ c.company_id }}" {{ 'selected' if form.get('company_id') == c.company_id|string }}>{{ c.company_name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="role_title">Role title *</label>
+        <input class="form-control" id="role_title" name="role_title" maxlength="100" value="{{ form.get('role_title', '') }}" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="category">Category *</label>
+        <select class="form-select" id="category" name="category" required>
+          <option value="">Choose…</option>
+          {% for c in categories %}<option {{ 'selected' if form.get('category') == c }}>{{ c }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="work_mode">Work mode</label>
+        <select class="form-select" id="work_mode" name="work_mode">
+          {% for m in modes %}<option {{ 'selected' if form.get('work_mode') == m }}>{{ m }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="location">Location</label>
+        <input class="form-control" id="location" name="location" maxlength="100" value="{{ form.get('location', '') }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="duration_weeks">Duration (weeks)</label>
+        <input class="form-control" id="duration_weeks" name="duration_weeks" inputmode="numeric" value="{{ form.get('duration_weeks', '') }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="openings">Openings</label>
+        <input class="form-control" id="openings" name="openings" inputmode="numeric" value="{{ form.get('openings', '1') }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="stipend">Stipend</label>
+        <input class="form-control" id="stipend" name="stipend" maxlength="40" placeholder="Rs 10,000 / month" value="{{ form.get('stipend', '') }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="deadline">Apply by</label>
+        <input class="form-control" type="date" id="deadline" name="deadline" value="{{ form.get('deadline', '') }}">
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="eligibility">Eligibility</label>
+        <textarea class="form-control" id="eligibility" name="eligibility" rows="2" maxlength="500" placeholder="Who can apply? Departments, year, skills…">{{ form.get('eligibility', '') }}</textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="description">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="5" maxlength="2000">{{ form.get('description', '') }}</textarea>
+      </div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+      <button class="btn btn-primary" type="submit">Post internship</button>
+      <a class="btn btn-outline-primary" href="{{ url_for('internships') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

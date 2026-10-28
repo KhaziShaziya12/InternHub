@@ -1,0 +1,51 @@
+{% macro status_badge(status) %}
+  {% set icons = {'PENDING': 'bi-hourglass-split', 'ACCEPTED': 'bi-check-circle-fill', 'REJECTED': 'bi-x-circle-fill'} %}
+  <span class="status status-{{ status }}"><i class="bi {{ icons.get(status, 'bi-circle') }}" aria-hidden="true"></i>{{ status|title }}</span>
+{% endmacro %}
+
+{% macro internship_card(i) %}
+<div class="card-ih hoverable p-3 p-md-4 d-flex flex-column">
+  <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+    <div>
+      <h3 class="job-title"><a href="{{ url_for('internship_detail', internship_id=i.internship_id) }}" class="text-decoration-none stretched-link-off" style="color:inherit">{{ i.role_title }}</a></h3>
+      <div class="company"><i class="bi bi-building" aria-hidden="true"></i> {{ i.company_name }}</div>
+    </div>
+    <span class="badge badge-cat rounded-pill"><i class="bi {{ category_icon(i.category) }}" aria-hidden="true"></i> {{ i.category }}</span>
+  </div>
+  <div class="meta d-flex flex-wrap gap-3 mb-3">
+    <span><i class="bi bi-geo-alt" aria-hidden="true"></i>{{ i.location or 'Not specified' }}</span>
+    <span><i class="bi bi-laptop" aria-hidden="true"></i>{{ i.work_mode or 'Onsite' }}</span>
+    {% if i.duration_weeks %}<span><i class="bi bi-clock" aria-hidden="true"></i>{{ i.duration_weeks }} weeks</span>{% endif %}
+    {% if i.stipend %}<span><i class="bi bi-cash-stack" aria-hidden="true"></i>{{ i.stipend }}</span>{% endif %}
+  </div>
+  {% if i.eligibility %}
+  <div class="elig-box mb-3"><strong>Eligibility:</strong> {{ i.eligibility|truncate(130) }}</div>
+  {% endif %}
+  <div class="mt-auto d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <span class="meta">
+      {% if i.is_open %}<i class="bi bi-calendar-event" aria-hidden="true"></i>Apply by {{ i.deadline|fmt_date }}
+      {% else %}<span class="status status-REJECTED"><i class="bi bi-lock-fill" aria-hidden="true"></i>Closed</span>{% endif %}
+    </span>
+    <span class="d-flex gap-2">
+      <a class="btn btn-outline-primary btn-sm" href="{{ url_for('internship_detail', internship_id=i.internship_id) }}">Details</a>
+      {% if i.is_open %}<a class="btn btn-primary btn-sm" href="{{ url_for('apply', internship_id=i.internship_id) }}">Apply</a>{% endif %}
+    </span>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro tracker(status) %}
+<div class="tracker" role="img" aria-label="Application progress: {{ status|title }}">
+  <div class="step done"><span class="dot"><i class="bi bi-send-fill"></i></span>Applied</div>
+  <span class="bar done"></span>
+  <div class="step {{ 'done' if status != 'PENDING' else '' }}"><span class="dot"><i class="bi bi-eye-fill"></i></span>Under review</div>
+  <span class="bar {{ 'done' if status != 'PENDING' else '' }}"></span>
+  {% if status == 'ACCEPTED' %}
+    <div class="step done end-ACCEPTED"><span class="dot"><i class="bi bi-check-lg"></i></span>Accepted</div>
+  {% elif status == 'REJECTED' %}
+    <div class="step done end-REJECTED"><span class="dot"><i class="bi bi-x-lg"></i></span>Not selected</div>
+  {% else %}
+    <div class="step"><span class="dot"><i class="bi bi-flag-fill"></i></span>Decision</div>
+  {% endif %}
+</div>
+{% endmacro %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="page-head d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div><h1>Students</h1><p class="meta mb-0">{{ students|length }} registered</p></div>
+    <a class="btn btn-primary" href="{{ url_for('student_new') }}"><i class="bi bi-person-plus"></i> Register student</a>
+  </div>
+
+  <form class="card-ih p-3 mb-3" method="get" role="search">
+    <div class="input-group">
+      <label class="visually-hidden" for="q">Search students</label>
+      <input class="form-control" id="q" name="q" value="{{ q }}" placeholder="Search by name, email, department or skill">
+      <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Search</button>
+      {% if q %}<a class="btn btn-outline-primary" href="{{ url_for('students') }}">Clear</a>{% endif %}
+    </div>
+  </form>
+
+  {% if students %}
+  <div class="table-responsive table-ih">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Student</th><th>Phone</th><th>Department</th><th>Skills</th><th class="text-center">Applications</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+      {% for s in students %}
+        <tr>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <span class="avatar" aria-hidden="true">{{ s.full_name|initials }}</span>
+              <div><div class="fw-bold">{{ s.full_name }}</div><div class="meta">{{ s.email }}</div></div>
+            </div>
+          </td>
+          <td>{{ s.phone }}</td>
+          <td>{{ s.department }}</td>
+          <td style="max-width:220px">{{ s.skills or '—' }}</td>
+          <td class="text-center">{{ s.app_count }}</td>
+          <td class="text-end text-nowrap">
+            <a class="btn btn-outline-primary btn-sm" href="{{ url_for('student_edit', student_id=s.student_id) }}"><i class="bi bi-pencil"></i> Edit</a>
+            <form class="d-inline" method="post" action="{{ url_for('student_delete', student_id=s.student_id) }}"
+                  data-confirm="Delete {{ s.full_name }} and all of their applications? This cannot be undone.">
+              <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash"></i> Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="card-ih empty"><i class="bi bi-people"></i><p class="mt-2 mb-0">No students found. <a href="{{ url_for('student_new') }}">Register the first one.</a></p></div>
+  {% endif %}
+</div>
+{% endblock %}

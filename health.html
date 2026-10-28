@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}System status{% endblock %}
+{% block content %}
+<div class="container" style="max-width:820px">
+  <div class="page-head"><h1>System status</h1><p class="meta">Live check of the Oracle connection (nothing is changed).</p></div>
+  <div class="card-ih p-4 mb-3">
+    <dl class="row mb-0">
+      <dt class="col-sm-4">Connection</dt>
+      <dd class="col-sm-8">{% if info.connected %}<span class="status status-ACCEPTED"><i class="bi bi-check-circle-fill"></i>Connected</span>{% else %}<span class="status status-REJECTED"><i class="bi bi-x-circle-fill"></i>Not connected</span>{% endif %}</dd>
+      <dt class="col-sm-4">Driver</dt><dd class="col-sm-8">{{ info.driver }}</dd>
+      <dt class="col-sm-4">DSN / user</dt><dd class="col-sm-8">{{ info.dsn }} / {{ info.user }}</dd>
+      {% if info.version %}<dt class="col-sm-4">Database</dt><dd class="col-sm-8">{{ info.version }}</dd>{% endif %}
+    </dl>
+  </div>
+  {% if info.tables %}
+  <div class="table-responsive table-ih mb-3">
+    <table class="table mb-0"><thead><tr><th>Table</th><th>State</th></tr></thead>
+      <tbody>{% for t, state in info.tables %}<tr><td>{{ t }}</td><td>{{ state }}</td></tr>{% endfor %}</tbody></table>
+  </div>
+  {% endif %}
+  {% if info.problems %}
+  <div class="alert alert-danger"><strong>Problems found:</strong>
+    <ul class="mb-0">{% for p in info.problems %}<li>{{ p }}</li>{% endfor %}</ul></div>
+  {% elif info.connected %}
+  <div class="alert alert-success">Everything InternHub needs is in place.</div>
+  {% endif %}
+</div>
+{% endblock %}

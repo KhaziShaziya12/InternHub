@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ i.role_title }}{% endblock %}
+{% block content %}
+<div class="container">
+  <nav class="page-head pb-0" aria-label="breadcrumb">
+    <a href="{{ url_for('internships') }}"><i class="bi bi-arrow-left"></i> All internships</a>
+  </nav>
+  <div class="row g-4 mt-1">
+    <div class="col-lg-8">
+      <div class="card-ih p-4">
+        <span class="badge badge-cat rounded-pill mb-2"><i class="bi {{ category_icon(i.category) }}"></i> {{ i.category }}</span>
+        <h1 class="h2 job-title" style="font-size:1.8rem">{{ i.role_title }}</h1>
+        <p class="company fs-5">{{ i.company_name }}{% if i.industry %} · <span class="fw-normal">{{ i.industry }}</span>{% endif %}</p>
+        <h2 class="h5 mt-4">About the role</h2>
+        <p style="white-space:pre-line">{{ i.description or 'The company has not added a description yet.' }}</p>
+        <h2 class="h5 mt-4">Eligibility</h2>
+        <div class="elig-box">{{ i.eligibility or 'Open to all students.' }}</div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card-ih p-4">
+        <ul class="list-unstyled meta mb-4" style="font-size:1rem">
+          <li class="mb-2"><i class="bi bi-geo-alt"></i> <strong>Location:</strong> {{ i.location or '—' }}</li>
+          <li class="mb-2"><i class="bi bi-laptop"></i> <strong>Mode:</strong> {{ i.work_mode or 'Onsite' }}</li>
+          <li class="mb-2"><i class="bi bi-clock"></i> <strong>Duration:</strong> {{ (i.duration_weeks ~ ' weeks') if i.duration_weeks else '—' }}</li>
+          <li class="mb-2"><i class="bi bi-cash-stack"></i> <strong>Stipend:</strong> {{ i.stipend or '—' }}</li>
+          <li class="mb-2"><i class="bi bi-people"></i> <strong>Openings:</strong> {{ i.openings or 1 }}</li>
+          <li class="mb-2"><i class="bi bi-calendar-event"></i> <strong>Deadline:</strong> {{ i.deadline|fmt_date }}</li>
+          <li><i class="bi bi-send"></i> <strong>Applicants so far:</strong> {{ i.applicants }}</li>
+        </ul>
+        {% if i.is_open %}
+          <a class="btn btn-primary w-100 btn-lg" href="{{ url_for('apply', internship_id=i.internship_id) }}">Apply now</a>
+        {% else %}
+          <div class="status status-REJECTED w-100 justify-content-center py-2"><i class="bi bi-lock-fill"></i> Applications closed</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+Flask>=3.0,<4.0
+python-dotenv>=1.0
+# Oracle driver. Oracle 10g needs "thick mode" (Oracle Instant Client), see README.md.
+oracledb>=2.0
+# Fallback ONLY if oracledb cannot talk to your 10g server (see README "Troubleshooting").
+# Uninstall oracledb first, then use Python 3.10 or older with:
+# cx_Oracle==8.3.0

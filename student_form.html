@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit student' if editing else 'Student registration' }}{% endblock %}
+{% block content %}
+<div class="container" style="max-width:760px">
+  <div class="page-head">
+    <h1>{{ 'Edit student' if editing else 'Student registration' }}</h1>
+    {% if not editing %}<p class="meta">Create your profile once, then apply to as many internships as you like.</p>{% endif %}
+  </div>
+  <form method="post" class="card-ih p-4" novalidate>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="full_name">Full name *</label>
+        <input class="form-control" id="full_name" name="full_name" maxlength="100" value="{{ s.get('full_name', '') }}" required autocomplete="name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="email">Email *</label>
+        <input class="form-control" type="email" id="email" name="email" maxlength="120" value="{{ s.get('email', '') }}" required autocomplete="email">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="phone">Phone number *</label>
+        <input class="form-control" type="tel" id="phone" name="phone" maxlength="20" value="{{ s.get('phone', '') }}" required autocomplete="tel">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="department">Department *</label>
+        <select class="form-select" id="department" name="department" required>
+          <option value="">Choose…</option>
+          {% for d in departments %}<option {{ 'selected' if s.get('department') == d }}>{{ d }}</option>{% endfor %}
+          {% if s.get('department') and s.get('department') not in departments %}<option selected>{{ s.get('department') }}</option>{% endif %}
+        </select>
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="skills">Skills</label>
+        <textarea class="form-control" id="skills" name="skills" rows="3" maxlength="500" placeholder="e.g. Python, SQL, public speaking">{{ s.get('skills') or '' }}</textarea>
+        <div class="form-text">Separate skills with commas.</div>
+      </div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+      <button class="btn btn-primary" type="submit">{{ 'Save changes' if editing else 'Register' }}</button>
+      <a class="btn btn-outline-primary" href="{{ url_for('students') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
